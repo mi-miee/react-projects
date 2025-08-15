@@ -1,35 +1,59 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useState, useEffect } from 'react'
+import Studentcard from './Component/studentcard';
+import Profile from './pages/profile';
+// import reactLogo from './assets/react.svg'
+// import viteLogo from '/vite.svg'
+// import './App.css'
 
 function App() {
-  const [count, setCount] = useState(0)
 
+  const [stdcard, setstdcard] = useState(null);
+
+  useEffect(() => {
+   let a = fetch("https://jsonplaceholder.typicode.com/users")
+a.then(response =>
+    response.json()
+)
+    .then(data => {
+     
+       const age = Math.floor(Math.random() * 8) + 18;
+        const grades = ["A+", "A", "A-", "B", "C"];
+        const grade = grades[Math.floor(Math.random() * grades.length)];
+
+        setstdcard({
+           name: data[0].name,
+          age: age,
+          grade: grade,
+          username: data[0].username,
+          email: data[0].email,
+          website: data[0].website,
+        })
+        
+    })
+    .catch(err => console.error(err));
+  },[])
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+  <div className="App">
+    <h1>Student Card</h1>
+    {stdcard ? (
+      <>
+      <Studentcard 
+        name={stdcard.name} 
+        age={stdcard.age} 
+        grade={stdcard.grade} 
+        
+      />
+         <Profile
+      username={stdcard.username} 
+        email={stdcard.email} 
+        website={stdcard.website}  />
+        </>
+    ) : (
+      <p>Loading...</p>
+    )}
+ 
+  </div>
+  ) 
 }
 
 export default App
